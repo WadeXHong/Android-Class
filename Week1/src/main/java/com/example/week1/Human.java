@@ -1,12 +1,8 @@
-package com.example.week1;//import java.io.Console;
+package com.example.week1;
 
-
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import javax.print.StreamPrintService;
 
 /**
  **************** Tips ****************
@@ -27,156 +23,264 @@ import javax.print.StreamPrintService;
  * * -----------------------------------
  * *
  */
-
+/////////////////////////////
+//main(String[] args)在最下面
+/////////////////////////////
 public class Human {
-
-    //Console console = System.console();
+    
     private String name;
     private String weapon;
-    private String characterClass = "Human";
+    private String type;
+    private String element;
+    private String characterClass;
     Scanner scan = new Scanner(System.in);
-    public final static String FIRE = "1";
-    public final static String ICE = "2";
-    private static Map<String,String[]> weapon2 = new HashMap<String,String[]>(){
+
+    //預設所有職業武器級攻擊方式
+    private Map<String,String[][]> weaponMap = new HashMap<String,String[][]>(){
         {
-            put("Human",new String[]{"Fist"});
-            put("Hunter",new String[]{"Fist","Bow"});
-            put("Warrior",new String[]{"Fist","Blade"});
-            put("Mage",new String[]{"Fist","Staff"});
+            put("Human",new String[][]{{"Hands"},{"Fist"}});
+            put("Hunter",new String[][]{{"Hands","Bow"},{"Fist"},{"Arrow"}});
+            put("Warrior",new String[][]{{"Hands","Blade"},{"Fist"},{"Slash","Stab"}});
+            put("Mage",new String[][]{{"Hands","Staff"},{"Fist"},{"Missile","Ball","Bolt"}});
         }
     };
-    private static Map<String,String[]> element = new HashMap<String, String[]>(){
+
+    //預設所有職業能用的屬性 (或許可以跟上一個MAP合在一起?)
+    private Map<String,String[]> elementMap = new HashMap<String, String[]>(){
         {
-            put("Human",new String[]{"Nothing"});
-            put("Hunter",new String[]{"Nothing","Poison","Ice"});
-            put("Warrior",new String[]{"Nothing","Fire","Stone"});
+            put("Human",new String[]{"Normal"});
+            put("Hunter",new String[]{"Normal","Poison","Ice"});
+            put("Warrior",new String[]{"Normal","Fire","Stone"});
             put("Mage",new String[]{"Fire","Ice","Lightning","Darkness"});
         }
     };
 
 
-    //建構子
+    //建構子詢問命名
     public Human(){
-        System.out.println("What's your name Adventurer ?\n My name is: ");
+        setCharacterClass();
+        System.out.println("What's your name adventurer ?\n My name is: ");
         setName(scan.next());
-        setWeapon(characterClass);
-        setElement(characterClass);
 
     }
-    //建構子 SETWEAPON()嘗試
+    //建構子直接命名
     public Human(String name){
+        setCharacterClass();
         setName(name);
-        setWeapon(characterClass);
-        setElement(characterClass);
+    }//人沒武器屬性選QQ
 
+    //依Class名稱定義職業參數characterClass
+    public void setCharacterClass(){
+        this.characterClass = this.getClass().getSimpleName();
     }
 
+    //回傳characterClass
+    public String getCharacterClass(){
+        return this.characterClass;
+    }
 
+    //設定名稱
     public void setName(String name){
         this.name = name ;
-        System.out.println("Hello "+ name +" ! Welcome to the adventure of Android Class #1 !");
+        System.out.println("Hello " + getCharacterClass() + " " + name +" ! Welcome to the adventure of Android Class #1 !\n");
     }
+
+    //回傳名稱
     public String getName(){
         return this.name;
     }
 
+    //設定武器和攻擊方式
+    public void setWeaponAndType(String characterClass){
+        String weaponChosen; //選擇的武器名稱
+        String attackTypeChosen; //選擇的攻擊方式
+        int numberInArray = 0; //讀array用數字
+        String[] weapons = weaponMap.get(characterClass)[0]; //從預設MAP抽取該職業資料
 
-    public String setWeapon(String characterClass){
-        String weaponChoose;
-        int numberWeapon = 0;
-        String[] weapons = weapon2.get(characterClass);
+        //武器選擇
         boolean isInList = false;
-            while(!isInList) {
-                System.out.print("Please choose the weapon you can use ");
-                for (String i : weapons) {
-                    System.out.print(i + " ");
+            while(!isInList) { //print選擇 判斷是否依清單輸入
+                System.out.println("Please choose the weapon you can use. (by input integer number)");
+                for (int i=0;i<weapons.length;i++) {
+                    System.out.print((i+1) + ":" + weapons[i] + " ");
                 }
                 System.out.println();
-                numberWeapon = scan.nextInt();
-                if (numberWeapon <= weapons.length && numberWeapon >0){
-                    isInList = true;}
+                numberInArray = scan.nextInt();
+                if (numberInArray <= weapons.length && numberInArray >0){
+                    isInList = true;}else {
+                    System.out.println("This selection is NOT in the list !\nPlease choose again !\n");
+                }
             }
-            weaponChoose = weapons[numberWeapon-1] ;
-        System.out.println("Now you can use "+ weaponChoose + " to attack!");
+            weaponChosen = weapons[numberInArray-1];
+            System.out.println("Weapon taken: "+ weaponChosen +"\n");
+            String[] attackType = weaponMap.get(characterClass)[numberInArray];
 
-        return weaponChoose;
+        //攻擊方式選擇
+        //這邊設true 因為weapons選擇成功會變isInList變成true了
+        while(isInList) {
+            System.out.println("Please choose the attack method you want. (by input integer number)");
+            for (int i = 0; i < attackType.length; i++) {
+                System.out.print((i + 1) + ":" + attackType[i] + " ");
+            }
+            System.out.println();
+            numberInArray = scan.nextInt();
+            if (numberInArray <= attackType.length && numberInArray > 0) {
+                isInList = false;
+            } else {
+                System.out.println("This selection is NOT in the list !\nPlease choose again !\n");
+            }
+        }
+        attackTypeChosen = attackType[numberInArray - 1];
+        System.out.println("Weapon taken: "+ weaponChosen + "\nAttacktype: " + attackTypeChosen +"\n");
+        this.type = attackTypeChosen;
+        this.weapon = weaponChosen;
     }
 
-    public String setElement(String characterClass) {
+    //回傳武器
+    public  String getWeapon(){
+        return this.weapon;
+    }
+
+    //回傳攻擊方式
+    public String getType(){
+        return this.type;
+    }
+
+    //設定附加屬性
+    public void setElement(String characterClass) {
         int numberElement = 0;
         boolean isInList = false;
-        String elementChoose;
-        String[] elements = element.get(characterClass);
+        String elementChosen;
+        String[] elements = elementMap.get(characterClass); //從MAP提取職業可用屬性
 
         while(!isInList){
-            System.out.print("Please set your element ");
-            for (String i:elements){
-                System.out.print(i +" ");
+            System.out.println("Please set your element. (by input integer number)");
+            for (int i=0;i<elements.length;i++){
+                System.out.print((i+1)+":"+elements[i]+" ");
             }
             System.out.println();
             numberElement = scan.nextInt();
             if (numberElement <= elements.length && numberElement > 0) {
                 isInList = true;
+            }else
+                {System.out.println("This selection is NOT in the list !\nPlease choose again !\n");
             }
         }
-        elementChoose = elements[numberElement-1];
-        System.out.println("Now you set " + elementChoose + " on your weapon !");
-        return elementChoose;
+        elementChosen = elements[numberElement-1];
+        System.out.println("Now you set " + elementChosen + " element on your attack !\n");
+        this.element = elementChosen;
     }
 
+    //回傳附加屬性
+    public String getElement(){
+        return this.element;
+    }
 
+    //問要不要打架
+    public void askAttack(){
+        boolean isYN = false;
+        String input;
+        while(!isYN) {
+            System.out.println("Do you want to attack ? (by input yes or no)");
+            input = scan.next().toLowerCase();
+            if (input.equals("yes")) {
+                attack();
+                isYN = true;
+            } else if (input.equals("no")) {
+                System.out.println("If you don't fight for yourself U R GGGGGG\nGame Over, so do YOUR LIFE\nYOU HAVE BEEN TERMINATED");
+                System.exit(1);
+            } else {
+                System.out.println("Input Yes or No isn't that hard, you have already piss me off = =\n");
+            }
+        }
 
-
-    //方法->攻擊
+    }
+    //人類專用攻擊
     public void attack(){
         System.out.println("Fist" + " Attack !");
     }
 
 
 }
+//Human結束
 
+//獵人
 class Hunter extends Human{
 
-    //Scanner scan = new Scanner(System.in);
-    //String fireOrIce = null;
-    private String weapon = "Bow";
-    private String characterClass = "Hunter";
-
-
+    public Hunter(){
+        super();
+        setWeaponAndType(getCharacterClass());
+        setElement(getCharacterClass());
+        askAttack();
+    }
+    public Hunter(String name){
+        super(name);
+        setWeaponAndType(getCharacterClass());
+        setElement(getCharacterClass());
+        askAttack();
+    }
 
     @Override
     public void attack(){
-        System.out.println("input 1 or 2 (fire or ice) to enhance your weapon");
-        System.out.println(weapon +" "+setElement(scan.next()) + " Attack !");
-
+        System.out.println( getElement() + " " + getType() + " Attack !");
     }
-
-    public Hunter(){
-        //super();
-    }
-    public Hunter(String name){
-        setName(name);
-        setWeapon(characterClass);
-        setElement(characterClass);
-    }
-
-
 }
+
 class Warrior extends Human{
-    private String[] weaponList = {"Fist","Blade"};
+
+    public Warrior(){
+        super();
+        setWeaponAndType(getCharacterClass());
+        setElement(getCharacterClass());
+        askAttack();
+    }
+    public Warrior(String name){
+        super(name);
+        setWeaponAndType(getCharacterClass());
+        setElement(getCharacterClass());
+        askAttack();
+    }
+
+    @Override
+    public void attack(){
+        System.out.println( getElement() + " " + getType() + " Attack !");
+    }
 }
+
 class Mage extends Human{
-    private String[] weaponList = {"Fist","Staff"};
+
+    public Mage(){
+        super();
+        setWeaponAndType(getCharacterClass());
+        setElement(getCharacterClass());
+        askAttack();
+    }
+    public Mage(String name){
+        super(name);
+        setWeaponAndType(getCharacterClass());
+        setElement(getCharacterClass());
+        askAttack();
+    }
+
+    @Override
+    public void attack(){
+        System.out.println( getElement() + " " + getType() + " Attack !");
+
+    }
 }
 
 class runTheGame{
     public static void main(String[] args){
 
+//        Human player1 = new Human();
+//        Human player2 = new Human("Wade");
+//        Human player3 = new Hunter();
+//        Human player4 = new Hunter("Wade");
+//        Human player5 = new Warrior();
+//        Human player6 = new Warrior("Wade");
+//        Human player7 = new Mage();
+//        Human player8 = new Mage("Wade");
 
-//        Human player = new Human("Wade");
-//        player.attack();
-        Hunter player2 = new Hunter("Wade");
-//        player2.attack();
     }
 }
 
