@@ -16,6 +16,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/Expression_TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
@@ -24,6 +25,7 @@
             android:textSize="32sp" />
 
         <TextView
+            android:id="@+id/Answer_TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
@@ -64,7 +66,7 @@
                 app:srcCompat="@drawable/selector_calculator_changesign" />
 
             <ImageButton
-                android:id="@+id/buttonPersent"
+                android:id="@+id/buttonPercent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -73,7 +75,7 @@
                 app:srcCompat="@drawable/selector_calculator_percent" />
 
             <ImageButton
-                android:id="@+id/bottonDivide"
+                android:id="@+id/buttonDivide"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -116,7 +118,7 @@
                 app:srcCompat="@drawable/selector_calculator_9" />
 
             <ImageButton
-                android:id="@+id/bottonTimes"
+                android:id="@+id/buttonTimes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -224,7 +226,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/selector_calculator_0"/>
+                android:src="@drawable/selector_calculator_0" />
 
             <ImageButton
                 android:id="@+id/buttonPoint"
@@ -236,7 +238,7 @@
                 app:srcCompat="@drawable/selector_calculator_point" />
 
             <ImageButton
-                android:id="@+id/buttonEqual"
+                android:id="@+id/buttonEquals"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
