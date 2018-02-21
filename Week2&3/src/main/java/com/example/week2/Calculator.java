@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,11 +60,11 @@ public class Calculator extends AppCompatActivity {
 //        Log.i("show temp",temp);
     }
     public void setOnAnswerView(){
-        String temp = "";
-        for (Object i:numbers){
-            temp += i;
-        }
-        answerTextView.setText(temp);
+//        String temp = "";
+//        for (Object i:numbers){
+//            temp += i;
+//        }
+        answerTextView.setText(String.valueOf(answer));
         Log.d("length",String.valueOf(operators.size()));
 
     }
@@ -226,6 +225,7 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText = "";
+                answer = 0d;
                 setOnTextView();
             }
         });
@@ -237,11 +237,11 @@ public class Calculator extends AppCompatActivity {
             }
         });
     }
-    public ArrayList<Double> stringToDouble(List splitToNumb){
-        ArrayList numbDouble = new ArrayList<Double>();
-        for(int i=0;i<numbDouble.size();i++) {
-            numbDouble.add(Double.parseDouble(splitToNumb.get(i).toString()));
-            Log.d("context of numbDouble[]",String.valueOf(numbDouble.get(i)));
+    public double[] stringToDouble(List splitToNumb){
+        double[] numbDouble = new double[splitToNumb.size()];
+        for(int i=0;i<numbDouble.length;i++) {
+            numbDouble[i] = (Double.parseDouble(splitToNumb.get(i).toString()));
+            Log.d("context of numbDouble[]",String.valueOf(numbDouble[i]));
         }
         return numbDouble;
     }
@@ -261,17 +261,10 @@ public class Calculator extends AppCompatActivity {
         splitToOper.remove(0); //可能會有特殊情況
         numbers = splitToNumb;
         operators = splitToOper;
-        //將numbers<String>轉為double<Double>
-        ArrayList doubleNumb = stringToDouble(splitToNumb);
 
-        //先乘除 找位置
-        ArrayList<Integer> first = new ArrayList<Integer>();
-        for(int i=0;i<operators.size();i++){
-            if (operators.get(i).equals("×") || operators.get(i).equals("÷")){
-                first.add(i);
-                Log.d("postion of ÷×",first.get(i).toString());
-            }
-        }
+
+
+
         //找乘除負號相連位置
         ArrayList<Integer> emptyPosition = new ArrayList<Integer>();
         for(int i=0;i<numbers.size();i++){
@@ -280,7 +273,39 @@ public class Calculator extends AppCompatActivity {
                 Log.d("emptyPosition",emptyPosition.get(i).toString());
             }
         }
-        //
+        //去除""及-
+        if (!emptyPosition.isEmpty()) {
+
+            for(int i=emptyPosition.size()-1;i>=0;i--){
+                String number = numbers.get(emptyPosition.get(i)).toString();
+                numbers.set(emptyPosition.get(i)+1,"-"+number); //""後數字*-1
+                numbers.remove(emptyPosition.get(i));//""去掉
+                operators.remove(emptyPosition.get(i));//去掉-號
+            }
+        }
+
+        //先乘除 找位置
+        ArrayList<Integer> firstCalculate = new ArrayList<Integer>();
+        for(int i=0;i<operators.size();i++){
+            if (operators.get(i).equals("×") || operators.get(i).equals("÷")){
+                firstCalculate.add(i);
+                Log.d("postion of ÷×", firstCalculate.get(i).toString());
+            }
+        }
+        //這邊要先轉Double了
+        //將numbers<String>轉為double<Double>
+        double[] doubleNumb = stringToDouble(numbers);
+        //+a*b=c改成+0+c
+        for(int i=0;i<firstCalculate.size();i++){
+            double number1 = doubleNumb[(firstCalculate.get(i))];
+            double number2 = doubleNumb[firstCalculate.get(i)+1];
+            double product = number1*number2;
+            doubleNumb[firstCalculate.get(i)] = 0;
+            doubleNumb[firstCalculate.get(i)+1] = product;
+        }
+        for (double i:doubleNumb){
+            answer += i;
+        }
 
 
     }
