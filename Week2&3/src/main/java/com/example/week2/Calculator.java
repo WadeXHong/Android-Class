@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Calculator extends AppCompatActivity {
@@ -37,8 +39,8 @@ public class Calculator extends AppCompatActivity {
     //
     Double answer = 0d;
     String temp = "";
-    String[] numbers;
-    String[] operators;
+    ArrayList numbers;
+    ArrayList operators;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +62,11 @@ public class Calculator extends AppCompatActivity {
     }
     public void setOnAnswerView(){
         String temp = "";
-        for (String i:numbers){
+        for (Object i:numbers){
             temp += i;
         }
         answerTextView.setText(temp);
-        Log.d("length",String.valueOf(operators.length));
+        Log.d("length",String.valueOf(operators.size()));
 
     }
 
@@ -235,42 +237,61 @@ public class Calculator extends AppCompatActivity {
             }
         });
     }
-    public double[] stringToDouble(String[] splitToNumb){
-        double[] numbDouble = new double[splitToNumb.length];
-        for(int i=0;i<numbDouble.length;i++) {
-            numbDouble[i] =Double.parseDouble(splitToNumb[i]);
-            Log.d("context of numbDouble[]",String.valueOf(numbDouble[i]));
+    public ArrayList<Double> stringToDouble(List splitToNumb){
+        ArrayList numbDouble = new ArrayList<Double>();
+        for(int i=0;i<numbDouble.size();i++) {
+            numbDouble.add(Double.parseDouble(splitToNumb.get(i).toString()));
+            Log.d("context of numbDouble[]",String.valueOf(numbDouble.get(i)));
         }
         return numbDouble;
     }
 
 
     public void splitString(){
-        String[] splitToNumb = expressionText.split("\\+|-|×|÷");
-        String[] splitToOper = expressionText.split("\\d|%"); //split出來會有null 找不到原因
+        ArrayList splitToNumb = new ArrayList();
+        splitToNumb.addAll(Arrays.asList(expressionText.split("\\+|-|×|÷",0)));
+        //operOnlyText = Arrays.asList(expressionText.split());
+
+        String operOnlyText = expressionText;
+        for(int i=0;i<splitToNumb.size();i++){
+            operOnlyText = operOnlyText.replace(splitToNumb.get(i).toString()," ");
+        }
+        ArrayList splitToOper = new ArrayList();
+        splitToOper.addAll(Arrays.asList(operOnlyText.split(" |%"))); //split出來會有null 找不到原因
+        splitToOper.remove(0); //可能會有特殊情況
         numbers = splitToNumb;
         operators = splitToOper;
-        //將numbers[]轉為double[]
-        double[] doubleNumb = stringToDouble(numbers);
+        //將numbers<String>轉為double<Double>
+        ArrayList doubleNumb = stringToDouble(splitToNumb);
 
-        List list = getPriorOperPosition();
-        for(int i=0;i<getPriorOperPosition().size();i++){
-            //先將numbers[]裡的String轉為數字 並加入正負號
-            //
-        }
-    }
-
-    public List getPriorOperPosition(){
-        // check the position of
-        List first = new ArrayList();
-        for (int i=0;i<operators.length;i++){
-            if(operators[i].matches("×||÷")){
+        //先乘除 找位置
+        ArrayList<Integer> first = new ArrayList<Integer>();
+        for(int i=0;i<operators.size();i++){
+            if (operators.get(i).equals("×") || operators.get(i).equals("÷")){
                 first.add(i);
-                Log.d("context of List",first.get(i).toString());
+                Log.d("postion of ÷×",first.get(i).toString());
             }
         }
-        return first;
+        //找乘除負號相連位置
+        ArrayList<Integer> emptyPosition = new ArrayList<Integer>();
+        for(int i=0;i<numbers.size();i++){
+            if (numbers.get(i).equals("")){
+                emptyPosition.add(i);
+                Log.d("emptyPosition",emptyPosition.get(i).toString());
+            }
+        }
+        //
+
+
     }
+    public void timesDivive(){
+
+    }
+
+
+
+
+
     //加減乘除要做的事
     //1.取運算符號的前一次輸入(answer)
     public void onClickPlus(){
