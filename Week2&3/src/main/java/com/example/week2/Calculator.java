@@ -36,9 +36,7 @@ public class Calculator extends AppCompatActivity {
     ImageButton buttonClear;
     //
     Double answer = 0d;
-    String temp = "";
-    String[] numbers;
-    String[] operators;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +54,10 @@ public class Calculator extends AppCompatActivity {
     public void setOnTextView(){
         expressionTextView.setText(expressionText);
         answerTextView.setText(String.valueOf(answer));
-//        Log.i("show temp",temp);
+
     }
     public void setOnAnswerView(){
-        String temp = "";
-        for (String i:numbers){
-            temp += i;
-        }
-        answerTextView.setText(temp);
-        Log.d("length",String.valueOf(operators.length));
+
 
     }
 
@@ -96,7 +89,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "0";
-                temp += "0";
                 setOnTextView();
             }
         });
@@ -104,7 +96,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "1";
-                temp += "1";
                 setOnTextView();
             }
         });
@@ -112,7 +103,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "2";
-                temp += "2";
                 setOnTextView();
             }
         });
@@ -120,7 +110,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "3";
-                temp += "3";
                 setOnTextView();
             }
         });
@@ -128,7 +117,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "4";
-                temp += "4";
                 setOnTextView();
             }
         });
@@ -136,7 +124,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "5";
-                temp += "5";
                 setOnTextView();
             }
         });
@@ -144,7 +131,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "6";
-                temp += "6";
                 setOnTextView();
             }
         });
@@ -152,7 +138,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "7";
-                temp += "7";
                 setOnTextView();
             }
         });
@@ -160,7 +145,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "8";
-                temp += "8";
                 setOnTextView();
             }
         });
@@ -168,7 +152,6 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "9";
-                temp += "9";
                 setOnTextView();
             }
         });
@@ -176,13 +159,8 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 expressionText += "+";
-//                symbol.add(temp);
-//                temp = "";
                 setOnTextView();
-//                Log.d("arraylenght",String.valueOf(symbol.size()));
-//                for (int i=0;i<symbol.size();i++){
-//                    Log.d("context", symbol.get(i).toString());
-//                }
+
             }
         });
         buttonMinus.setOnClickListener(new View.OnClickListener() {
@@ -230,47 +208,17 @@ public class Calculator extends AppCompatActivity {
         buttonEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                splitString();
+
                 setOnAnswerView();
             }
         });
     }
-    public double[] stringToDouble(String[] splitToNumb){
-        double[] numbDouble = new double[splitToNumb.length];
-        for(int i=0;i<numbDouble.length;i++) {
-            numbDouble[i] =Double.parseDouble(splitToNumb[i]);
-            Log.d("context of numbDouble[]",String.valueOf(numbDouble[i]));
-        }
-        return numbDouble;
-    }
 
 
-    public void splitString(){
-        String[] splitToNumb = expressionText.split("\\+|-|×|÷");
-        String[] splitToOper = expressionText.split("\\d|%"); //split出來會有null 找不到原因
-        numbers = splitToNumb;
-        operators = splitToOper;
-        //將numbers[]轉為double[]
-        double[] doubleNumb = stringToDouble(numbers);
 
-        List list = getPriorOperPosition();
-        for(int i=0;i<getPriorOperPosition().size();i++){
-            //先將numbers[]裡的String轉為數字 並加入正負號
-            //
-        }
-    }
 
-    public List getPriorOperPosition(){
-        // check the position of
-        List first = new ArrayList();
-        for (int i=0;i<operators.length;i++){
-            if(operators[i].matches("×||÷")){
-                first.add(i);
-                Log.d("context of List",first.get(i).toString());
-            }
-        }
-        return first;
-    }
+
+
     //加減乘除要做的事
     //1.取運算符號的前一次輸入(answer)
     public void onClickPlus(){
