@@ -36,8 +36,8 @@ public class Calculator extends AppCompatActivity {
     ImageButton buttonPercent;
     ImageButton buttonClear;
     Double answer = 0d;
-    ArrayList numbers;
-    ArrayList operators;
+    ArrayList numbers = new ArrayList();
+    ArrayList operators = new ArrayList();
     boolean isNumber = false;
     boolean isOperator = false;
     boolean inputIsNumber;
@@ -52,6 +52,7 @@ public class Calculator extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
         tempExpressionText = "";
+        expressionText = "";
         expressionTextView = (TextView)findViewById(R.id.Expression_TextView);
         answerTextView = (TextView)findViewById(R.id.Answer_TextView);
         setParameters();
@@ -62,6 +63,9 @@ public class Calculator extends AppCompatActivity {
 
     public void setOnTextView(){
         Log.d("tempExTV context",tempExpressionText);
+        for (int i = 0;i<numbers.size();i++){
+            Log.d("NBAL",numbers.get(i).toString());
+        }
         expressionTextView.setText(expressionText);
         answerTextView.setText(String.valueOf(answer));
 
@@ -93,6 +97,16 @@ public class Calculator extends AppCompatActivity {
         buttonClear = (ImageButton)findViewById(R.id.buttonReset);
     }
 
+    public void saveNbInAL(){
+        numbers.add(Double.parseDouble(tempExpressionText));
+        tempExpressionText = "";
+    }
+
+    public void saveOpInAL(){
+        operators.add(tempExpressionText);
+        tempExpressionText = "";
+    }
+
     public void checkLastChr(){
         if (inputIsNumber && !inputIsOperater){
             if (isNumber && !isOperator){
@@ -109,6 +123,7 @@ public class Calculator extends AppCompatActivity {
             if (isNumber && !isOperator){
                 overrideLastOp = false;
                 saveNbInAL = true;
+                saveNbInAL();
             }else if (!isNumber && isOperator){
                 overrideLastOp = true;
                 saveNbInAL = false;
@@ -125,6 +140,7 @@ public class Calculator extends AppCompatActivity {
     public void overrideLastOp(){
         if (overrideLastOp){
             tempExpressionText = tempExpressionText.substring(0,tempExpressionText.length()-1);
+            expressionText = expressionText.substring(0,expressionText.length()-1);
         }
     }
 
@@ -134,7 +150,9 @@ public class Calculator extends AppCompatActivity {
             public void onClick(View v) {
                 inputIsNumber = true;
                 inputIsOperater = false;
+                saveOpInAL();
                 tempExpressionText += "0";
+                expressionText += "0";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -147,6 +165,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "1";
+                expressionText += "1";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -158,6 +177,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "2";
+                expressionText += "2";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -169,6 +189,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "3";
+                expressionText += "3";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -180,6 +201,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "4";
+                expressionText += "4";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -191,6 +213,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "5";
+                expressionText += "5";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -202,6 +225,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "6";
+                expressionText += "6";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -213,6 +237,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "7";
+                expressionText += "7";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -224,6 +249,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "8";
+                expressionText += "8";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -235,6 +261,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = true;
                 inputIsOperater = false;
                 tempExpressionText += "9";
+                expressionText += "9";
                 setOnTextView();
                 isNumber = true;
                 isOperator = false;
@@ -248,6 +275,7 @@ public class Calculator extends AppCompatActivity {
                 checkLastChr();
                 overrideLastOp();
                 tempExpressionText += "+";
+                expressionText += "+";
                 setOnTextView();
                 isNumber = false;
                 isOperator = true;
@@ -262,6 +290,7 @@ public class Calculator extends AppCompatActivity {
                 checkLastChr();
                 overrideLastOp();
                 tempExpressionText += "-";
+                expressionText += "-";
                 setOnTextView();
                 isNumber = false;
                 isOperator = true;
@@ -275,6 +304,7 @@ public class Calculator extends AppCompatActivity {
                 checkLastChr();
                 overrideLastOp();
                 tempExpressionText += "×";
+                expressionText += "×";
                 setOnTextView();
                 isNumber = false;
                 isOperator = true;
@@ -288,6 +318,7 @@ public class Calculator extends AppCompatActivity {
                 checkLastChr();
                 overrideLastOp();
                 tempExpressionText += "÷";
+                expressionText += "÷";
                 setOnTextView();
                 isNumber = false;
                 isOperator = true;
@@ -299,6 +330,7 @@ public class Calculator extends AppCompatActivity {
                 inputIsNumber = false;
                 inputIsOperater = true;
                 tempExpressionText += ".";
+                expressionText += ".";
                 setOnTextView();
             }
         });
@@ -306,6 +338,7 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tempExpressionText += "%";
+                expressionText += "%";
                 setOnTextView();
             }
         });
@@ -313,6 +346,8 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tempExpressionText = "";
+                expressionText = "";
+                numbers.clear();
                 setOnTextView();
                 isNumber = false;
                 isOperator = false;
