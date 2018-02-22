@@ -66,12 +66,16 @@ public class Calculator extends AppCompatActivity {
         for (int i = 0;i<numbers.size();i++){
             Log.d("NBAL",numbers.get(i).toString());
         }
+        for (int i = 0;i<operators.size();i++){
+            Log.d("OPAL",operators.get(i).toString());
+        }
         expressionTextView.setText(expressionText);
-        answerTextView.setText(String.valueOf(answer));
+        Log.e("-","-seperateline-------------------------");
+
 
     }
     public void setOnAnswerView(){
-
+        answerTextView.setText(String.valueOf(expressionText));
 
     }
 
@@ -115,6 +119,7 @@ public class Calculator extends AppCompatActivity {
             }else if (!isNumber && isOperator){
                 overrideLastOp= false;
                 saveNbInAL = false;
+                saveOpInAL();
             }else {
                 overrideLastOp = false;
                 saveNbInAL = false;
@@ -142,204 +147,179 @@ public class Calculator extends AppCompatActivity {
             tempExpressionText = tempExpressionText.substring(0,tempExpressionText.length()-1);
             expressionText = expressionText.substring(0,expressionText.length()-1);
         }
+        overrideLastOp = false;
     }
 
+    public void numbersPreprocess(){
+        inputIsNumber = true;
+        inputIsOperater = false;
+        checkLastChr();
+    }
+    public void numbersPostprocess(){
+        setOnTextView();
+        isNumber = true;
+        isOperator = false;
+    }
+    public void operatorsPreprocess(){
+        inputIsNumber = false;
+        inputIsOperater = true;
+        checkLastChr();
+        overrideLastOp();
+    }
+    public void operatorsPostprocess(){
+        setOnTextView();
+        isNumber = false;
+        isOperator = true;
+    }
     public void setOnClick(){
         button0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
-                saveOpInAL();
+                numbersPreprocess();
                 tempExpressionText += "0";
                 expressionText += "0";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
 
             }
         });
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "1";
                 expressionText += "1";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "2";
                 expressionText += "2";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "3";
                 expressionText += "3";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "4";
                 expressionText += "4";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "5";
                 expressionText += "5";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "6";
                 expressionText += "6";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "7";
                 expressionText += "7";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "8";
                 expressionText += "8";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         button9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = true;
-                inputIsOperater = false;
+                numbersPreprocess();
                 tempExpressionText += "9";
                 expressionText += "9";
-                setOnTextView();
-                isNumber = true;
-                isOperator = false;
+                numbersPostprocess();
             }
         });
         buttonPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = false;
-                inputIsOperater = true;
-                checkLastChr();
-                overrideLastOp();
+                operatorsPreprocess();
                 tempExpressionText += "+";
                 expressionText += "+";
-                setOnTextView();
-                isNumber = false;
-                isOperator = true;
+                operatorsPostprocess();
 
             }
         });
         buttonMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = false;
-                inputIsOperater = true;
-                checkLastChr();
-                overrideLastOp();
+                operatorsPreprocess();
                 tempExpressionText += "-";
                 expressionText += "-";
-                setOnTextView();
-                isNumber = false;
-                isOperator = true;
+                operatorsPostprocess();
             }
         });
         buttonTimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = false;
-                inputIsOperater = true;
-                checkLastChr();
-                overrideLastOp();
+                operatorsPreprocess();
                 tempExpressionText += "×";
                 expressionText += "×";
-                setOnTextView();
-                isNumber = false;
-                isOperator = true;
+                operatorsPostprocess();
             }
         });
         buttonDivide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = false;
-                inputIsOperater = true;
-                checkLastChr();
-                overrideLastOp();
+                operatorsPreprocess();
                 tempExpressionText += "÷";
                 expressionText += "÷";
-                setOnTextView();
-                isNumber = false;
-                isOperator = true;
+                operatorsPostprocess();
             }
         });
         buttonPoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputIsNumber = false;
-                inputIsOperater = true;
-                tempExpressionText += ".";
-                expressionText += ".";
-                setOnTextView();
+                if (!tempExpressionText.contains(".")) {
+                    numbersPreprocess();
+                    tempExpressionText += ".";
+                    expressionText += ".";
+                    numbersPostprocess();
+                }
             }
         });
         buttonPercent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tempExpressionText += "%";
-                expressionText += "%";
-                setOnTextView();
+                if (!tempExpressionText.contains("%")) {
+                    numbersPreprocess();
+                    tempExpressionText += "*0.01";
+                    expressionText += "%";
+                    numbersPostprocess();
+                }
             }
         });
         buttonClear.setOnClickListener(new View.OnClickListener() {
@@ -348,6 +328,7 @@ public class Calculator extends AppCompatActivity {
                 tempExpressionText = "";
                 expressionText = "";
                 numbers.clear();
+                operators.clear();
                 setOnTextView();
                 isNumber = false;
                 isOperator = false;
@@ -356,8 +337,15 @@ public class Calculator extends AppCompatActivity {
         buttonEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (isNumber && !isOperator){
+                    saveNbInAL();
+                }else if (!isNumber && isOperator){
+                    overrideLastOp = true;
+                    overrideLastOp();
+                }
+                setOnTextView();
                 setOnAnswerView();
+
             }
         });
     }
