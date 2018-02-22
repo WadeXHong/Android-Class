@@ -13,6 +13,7 @@ import java.util.List;
 public class Calculator extends AppCompatActivity {
     //View announce
     String expressionText;
+    String tempExpressionText;
     TextView expressionTextView;
     TextView answerTextView;
     ImageButton button0;
@@ -34,15 +35,23 @@ public class Calculator extends AppCompatActivity {
     ImageButton buttonChangeSign;
     ImageButton buttonPercent;
     ImageButton buttonClear;
-    //
     Double answer = 0d;
+    ArrayList numbers;
+    ArrayList operators;
+    boolean isNumber = false;
+    boolean isOperator = false;
+    boolean inputIsNumber;
+    boolean inputIsOperater;
+    boolean isBlank = true;
+    boolean overrideLastOp;
+    boolean saveNbInAL;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
-        expressionText = "";
+        tempExpressionText = "";
         expressionTextView = (TextView)findViewById(R.id.Expression_TextView);
         answerTextView = (TextView)findViewById(R.id.Answer_TextView);
         setParameters();
@@ -52,6 +61,7 @@ public class Calculator extends AppCompatActivity {
 
 
     public void setOnTextView(){
+        Log.d("tempExTV context",tempExpressionText);
         expressionTextView.setText(expressionText);
         answerTextView.setText(String.valueOf(answer));
 
@@ -83,126 +93,229 @@ public class Calculator extends AppCompatActivity {
         buttonClear = (ImageButton)findViewById(R.id.buttonReset);
     }
 
+    public void checkLastChr(){
+        if (inputIsNumber && !inputIsOperater){
+            if (isNumber && !isOperator){
+                overrideLastOp = false;
+                saveNbInAL = false;
+            }else if (!isNumber && isOperator){
+                overrideLastOp= false;
+                saveNbInAL = false;
+            }else {
+                overrideLastOp = false;
+                saveNbInAL = false;
+            }
+        }else if (!inputIsNumber && inputIsOperater){
+            if (isNumber && !isOperator){
+                overrideLastOp = false;
+                saveNbInAL = true;
+            }else if (!isNumber && isOperator){
+                overrideLastOp = true;
+                saveNbInAL = false;
+            }else {
+                overrideLastOp = false;
+                saveNbInAL = false;
+            }
+        }else{
+            overrideLastOp = false;
+            saveNbInAL = false;
+        }
+    }
+
+    public void overrideLastOp(){
+        if (overrideLastOp){
+            tempExpressionText = tempExpressionText.substring(0,tempExpressionText.length()-1);
+        }
+    }
 
     public void setOnClick(){
         button0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "0";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "0";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
+
             }
         });
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "1";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "1";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "2";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "2";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "3";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "3";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "4";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "4";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "5";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "5";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "6";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "6";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "7";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "7";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "8";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "8";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         button9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "9";
+                inputIsNumber = true;
+                inputIsOperater = false;
+                tempExpressionText += "9";
                 setOnTextView();
+                isNumber = true;
+                isOperator = false;
             }
         });
         buttonPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "+";
+                inputIsNumber = false;
+                inputIsOperater = true;
+                checkLastChr();
+                overrideLastOp();
+                tempExpressionText += "+";
                 setOnTextView();
+                isNumber = false;
+                isOperator = true;
 
             }
         });
         buttonMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "-";
+                inputIsNumber = false;
+                inputIsOperater = true;
+                checkLastChr();
+                overrideLastOp();
+                tempExpressionText += "-";
                 setOnTextView();
+                isNumber = false;
+                isOperator = true;
             }
         });
         buttonTimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "×";
+                inputIsNumber = false;
+                inputIsOperater = true;
+                checkLastChr();
+                overrideLastOp();
+                tempExpressionText += "×";
                 setOnTextView();
+                isNumber = false;
+                isOperator = true;
             }
         });
         buttonDivide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "÷";
+                inputIsNumber = false;
+                inputIsOperater = true;
+                checkLastChr();
+                overrideLastOp();
+                tempExpressionText += "÷";
                 setOnTextView();
+                isNumber = false;
+                isOperator = true;
             }
         });
         buttonPoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += ".";
+                inputIsNumber = false;
+                inputIsOperater = true;
+                tempExpressionText += ".";
                 setOnTextView();
             }
         });
         buttonPercent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText += "%";
+                tempExpressionText += "%";
                 setOnTextView();
             }
         });
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expressionText = "";
+                tempExpressionText = "";
                 setOnTextView();
+                isNumber = false;
+                isOperator = false;
             }
         });
         buttonEquals.setOnClickListener(new View.OnClickListener() {
