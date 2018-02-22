@@ -254,11 +254,11 @@ public class Calculator extends AppCompatActivity {
 
         String operOnlyText = expressionText;
         for(int i=0;i<splitToNumb.size();i++){
-            operOnlyText = operOnlyText.replace(splitToNumb.get(i).toString()," ");
+            operOnlyText = operOnlyText.replace(splitToNumb.get(i).toString(),"*");
         }
         ArrayList splitToOper = new ArrayList();
-        splitToOper.addAll(Arrays.asList(operOnlyText.split(" |%"))); //split出來會有null 找不到原因
-        splitToOper.remove(0); //可能會有特殊情況
+        splitToOper.addAll(Arrays.asList(operOnlyText.split("\\*|%"))); //split出來會有null 找不到原因
+        splitToOper.remove(""); //可能會有特殊情況
         numbers = splitToNumb;
         operators = splitToOper;
 
@@ -270,17 +270,17 @@ public class Calculator extends AppCompatActivity {
         for(int i=0;i<numbers.size();i++){
             if (numbers.get(i).equals("")){
                 emptyPosition.add(i);
-                Log.d("emptyPosition",emptyPosition.get(i).toString());
+                //Log.d("emptyPosition",emptyPosition.get(i).toString());
             }
         }
         //去除""及-
         if (!emptyPosition.isEmpty()) {
 
             for(int i=emptyPosition.size()-1;i>=0;i--){
-                String number = numbers.get(emptyPosition.get(i)).toString();
+                String number = numbers.get(emptyPosition.get(i)+1).toString();
                 numbers.set(emptyPosition.get(i)+1,"-"+number); //""後數字*-1
-                numbers.remove(emptyPosition.get(i));//""去掉
-                operators.remove(emptyPosition.get(i));//去掉-號
+                numbers.remove(emptyPosition.get(i)+0);//""去掉
+                operators.remove(emptyPosition.get(i)+0);//去掉-號
             }
         }
 
@@ -289,7 +289,7 @@ public class Calculator extends AppCompatActivity {
         for(int i=0;i<operators.size();i++){
             if (operators.get(i).equals("×") || operators.get(i).equals("÷")){
                 firstCalculate.add(i);
-                Log.d("postion of ÷×", firstCalculate.get(i).toString());
+                //Log.d("postion of ÷×", firstCalculate.get(i).toString());
             }
         }
         //這邊要先轉Double了
