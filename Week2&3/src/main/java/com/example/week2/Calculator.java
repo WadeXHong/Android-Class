@@ -265,38 +265,46 @@ public class Calculator extends AppCompatActivity {
         buttonPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operatorsPreprocess();
-                tempExpressionText += "+";
-                expressionText += "+";
-                operatorsPostprocess();
+                if (!expressionText.isEmpty()) {
+                    operatorsPreprocess();
+                    tempExpressionText += "+";
+                    expressionText += "+";
+                    operatorsPostprocess();
+                }
 
             }
         });
         buttonMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operatorsPreprocess();
-                tempExpressionText += "-";
-                expressionText += "-";
-                operatorsPostprocess();
+                if (!expressionText.isEmpty()) {
+                    operatorsPreprocess();
+                    tempExpressionText += "-";
+                    expressionText += "-";
+                    operatorsPostprocess();
+                }
             }
         });
         buttonTimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operatorsPreprocess();
-                tempExpressionText += "×";
-                expressionText += "×";
-                operatorsPostprocess();
+                if (!expressionText.isEmpty()) {
+                    operatorsPreprocess();
+                    tempExpressionText += "×";
+                    expressionText += "×";
+                    operatorsPostprocess();
+                }
             }
         });
         buttonDivide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operatorsPreprocess();
-                tempExpressionText += "÷";
-                expressionText += "÷";
-                operatorsPostprocess();
+                if (!expressionText.isEmpty()) {
+                    operatorsPreprocess();
+                    tempExpressionText += "÷";
+                    expressionText += "÷";
+                    operatorsPostprocess();
+                }
             }
         });
         buttonPoint.setOnClickListener(new View.OnClickListener() {
@@ -324,11 +332,7 @@ public class Calculator extends AppCompatActivity {
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tempExpressionText = "";
-                expressionText = "";
-                numbers.clear();
-                operators.clear();
-                answer = 0d;
+                clear();
                 setOnTextView();
                 setOnAnswerView();
                 isNumber = false;
@@ -347,9 +351,18 @@ public class Calculator extends AppCompatActivity {
                 setOnTextView();
                 calculate(numbers,operators);
                 setOnAnswerView();
+                clear();
 
             }
         });
+    }
+
+    public void clear() {
+        tempExpressionText = "";
+        expressionText = "";
+        numbers.clear();
+        operators.clear();
+        answer = 0d;
     }
 
     public void calculate (ArrayList<Double> numbers,ArrayList<String> operators){
