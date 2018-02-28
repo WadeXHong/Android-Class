@@ -74,7 +74,7 @@ public class Calculator extends AppCompatActivity {
 
     }
     public void setOnAnswerView(){
-        answerTextView.setText(String.valueOf(expressionText));
+        answerTextView.setText(String.valueOf(answer));
 
     }
 
@@ -328,7 +328,9 @@ public class Calculator extends AppCompatActivity {
                 expressionText = "";
                 numbers.clear();
                 operators.clear();
+                answer = 0d;
                 setOnTextView();
+                setOnAnswerView();
                 isNumber = false;
                 isOperator = false;
             }
@@ -343,6 +345,7 @@ public class Calculator extends AppCompatActivity {
                     overrideLastOp();
                 }
                 setOnTextView();
+                calculate(numbers,operators);
                 setOnAnswerView();
 
             }
@@ -354,27 +357,31 @@ public class Calculator extends AppCompatActivity {
         ArrayList<Integer> timesPosition = timesPosition(operators);//找乘除號位置
         ArrayList<Integer> dividePosition = dividePosition(operators);
         ArrayList<Integer> minusPosition = minusPosition(operators);//找負號位置
-        if (!timesPosition.isEmpty()){
-            for(int i=0;i<timesPosition.size();i++){
-                 numbers.set(timesPosition.get(i),0d);//乘除號處理前項改為0
-                 numbers.set(timesPosition.get(i)+1,numbers.get(timesPosition.get(i))*numbers.get(timesPosition.get(i)+1));//後項改為計算結果
-                 operators.set(timesPosition.get(i),"+");//operators改為+
-            }
-        }
-        if (!dividePosition.isEmpty()){
-            for(int i=0;i<dividePosition.size();i++){
-                numbers.set(dividePosition.get(i),0d);//乘除號處理前項改為0
-                numbers.set(dividePosition.get(i)+1,numbers.get(dividePosition.get(i))/numbers.get(dividePosition.get(i)+1));//後項改為計算結果
-                operators.set(dividePosition.get(i),"+");//operators改為+
-            }
-        }
         if (!minusPosition.isEmpty()){
             for(int i=0;i<minusPosition.size();i++){
                 numbers.set(minusPosition.get(i)+1,-1*numbers.get(minusPosition.get(i)+1));//將負號乘入數字
                 operators.set(minusPosition.get(i),"+");//改為加法
             }
         }
+        if (!timesPosition.isEmpty()){
+            for(int i=0;i<timesPosition.size();i++){
+                numbers.set(timesPosition.get(i)+1,numbers.get(timesPosition.get(i))*numbers.get(timesPosition.get(i)+1));//後項改為計算結果
+                numbers.set(timesPosition.get(i),0d);//乘除號處理前項改為0
+                 operators.set(timesPosition.get(i),"+");//operators改為+
+            }
+        }
+        if (!dividePosition.isEmpty()){
+            for(int i=0;i<dividePosition.size();i++){
+                numbers.set(dividePosition.get(i)+1,numbers.get(dividePosition.get(i))/numbers.get(dividePosition.get(i)+1));//後項改為計算結果
+                numbers.set(dividePosition.get(i),0d);//乘除號處理前項改為0
+                operators.set(dividePosition.get(i),"+");//operators改為+
+            }
+        }
 
+
+        for (Double i:numbers){
+            answer += i;
+        }
     }
 
     public ArrayList<Integer> timesPosition(ArrayList operators){
