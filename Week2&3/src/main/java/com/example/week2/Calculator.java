@@ -368,7 +368,7 @@ public class Calculator extends AppCompatActivity {
         buttonChangeSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNumber && !isOperator){
+                if (isNumber & !isOperator){
                     if (tempExpressionText.contains("-")){
                         tempExpressionText = tempExpressionText.substring(1);
                         expressionText = expressionText.substring(
@@ -381,8 +381,9 @@ public class Calculator extends AppCompatActivity {
                                   + tempExpressionText;
 
                     }
-                }else if (!isNumber && isOperator){
-
+                }else if (isNumber & isOperator){
+                    answerReuse = -answerReuse;
+                    expressionText = answerReuse.toString();
                 }
                 setOnTextView();
 
