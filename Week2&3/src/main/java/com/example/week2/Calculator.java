@@ -13,6 +13,7 @@ public class Calculator extends AppCompatActivity {
     //View announce
     String expressionText;
     String tempExpressionText;
+    Double answerReuse;
     TextView expressionTextView;
     TextView answerTextView;
     ImageButton button0;
@@ -39,6 +40,7 @@ public class Calculator extends AppCompatActivity {
     ArrayList<String> operators = new ArrayList<>();
     boolean isNumber = false;
     boolean isOperator = false;
+    boolean isAnswerReuse = false;
     boolean inputIsNumber;
     boolean inputIsOperater;
     boolean isBlank = true;
@@ -111,11 +113,11 @@ public class Calculator extends AppCompatActivity {
     }
 
     public void checkLastChr(){
-        if (inputIsNumber && !inputIsOperater){
-            if (isNumber && !isOperator){
+        if (inputIsNumber & !inputIsOperater){
+            if (isNumber & !isOperator){
                 overrideLastOp = false;
                 saveNbInAL = false;
-            }else if (!isNumber && isOperator){
+            }else if (!isNumber & isOperator){
                 overrideLastOp= false;
                 saveNbInAL = false;
                 saveOpInAL();
@@ -123,15 +125,20 @@ public class Calculator extends AppCompatActivity {
                 overrideLastOp = false;
                 saveNbInAL = false;
             }
-        }else if (!inputIsNumber && inputIsOperater){
-            if (isNumber && !isOperator){
+        }else if (!inputIsNumber & inputIsOperater){
+            if (isNumber & !isOperator){
                 overrideLastOp = false;
                 saveNbInAL = true;
                 saveNbInAL();
-            }else if (!isNumber && isOperator){
+            }else if (!isNumber & isOperator){
                 overrideLastOp = true;
                 saveNbInAL = false;
-            }else {
+            }else if(isNumber & isOperator){
+                overrideLastOp = false;
+                saveNbInAL = false;
+                numbers.add(answerReuse);
+                expressionText = answerReuse.toString();
+            } else{
                 overrideLastOp = false;
                 saveNbInAL = false;
             }
@@ -265,7 +272,7 @@ public class Calculator extends AppCompatActivity {
         buttonPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!expressionText.isEmpty()) {
+                if (!expressionText.isEmpty() | answerReuse != null) {
                     operatorsPreprocess();
                     tempExpressionText += "+";
                     expressionText += "+";
@@ -277,7 +284,7 @@ public class Calculator extends AppCompatActivity {
         buttonMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!expressionText.isEmpty()) {
+                if (!expressionText.isEmpty() | answerReuse != null) {
                     operatorsPreprocess();
                     tempExpressionText += "-";
                     expressionText += "-";
@@ -288,7 +295,7 @@ public class Calculator extends AppCompatActivity {
         buttonTimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!expressionText.isEmpty()) {
+                if (!expressionText.isEmpty() | answerReuse != null) {
                     operatorsPreprocess();
                     tempExpressionText += "×";
                     expressionText += "×";
@@ -299,7 +306,7 @@ public class Calculator extends AppCompatActivity {
         buttonDivide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!expressionText.isEmpty()) {
+                if (!expressionText.isEmpty() | answerReuse != null) {
                     operatorsPreprocess();
                     tempExpressionText += "÷";
                     expressionText += "÷";
@@ -333,6 +340,7 @@ public class Calculator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 clear();
+                answerReuse = null;
                 setOnTextView();
                 setOnAnswerView();
                 isNumber = false;
@@ -342,9 +350,9 @@ public class Calculator extends AppCompatActivity {
         buttonEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNumber && !isOperator){
+                if (isNumber & !isOperator){
                     saveNbInAL();
-                }else if (!isNumber && isOperator){
+                }else if (!isNumber & isOperator){
                     overrideLastOp = true;
                     overrideLastOp();
                 }
@@ -352,6 +360,8 @@ public class Calculator extends AppCompatActivity {
                 calculate(numbers,operators);
                 setOnAnswerView();
                 clear();
+                isNumber = true;
+                isOperator = true;
 
             }
         });
@@ -418,6 +428,7 @@ public class Calculator extends AppCompatActivity {
         for (Double i:numbers){
             answer += i;
         }
+        answerReuse = answer;
     }
 
     public ArrayList<Integer> timesPosition(ArrayList operators){
