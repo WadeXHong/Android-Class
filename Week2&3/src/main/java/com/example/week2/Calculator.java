@@ -40,10 +40,9 @@ public class Calculator extends AppCompatActivity {
     ArrayList<String> operators = new ArrayList<>();
     boolean isNumber = false;
     boolean isOperator = false;
-    boolean isAnswerReuse = false;
+    boolean isPercentExist = false;
     boolean inputIsNumber;
     boolean inputIsOperater;
-    boolean isBlank = true;
     boolean overrideLastOp;
     boolean saveNbInAL;
 
@@ -133,7 +132,7 @@ public class Calculator extends AppCompatActivity {
             }else if (!isNumber & isOperator){
                 overrideLastOp = true;
                 saveNbInAL = false;
-            }else if(isNumber & isOperator){
+            }else if(isNumber & isOperator){ //for "="
                 overrideLastOp = false;
                 saveNbInAL = false;
                 numbers.add(answerReuse);
@@ -176,97 +175,118 @@ public class Calculator extends AppCompatActivity {
         setOnTextView();
         isNumber = false;
         isOperator = true;
+        isPercentExist = false;
     }
     public void setOnClick(){
         button0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "0";
-                expressionText += "0";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "0";
+                    expressionText += "0";
+                    numbersPostprocess();
+                }
 
             }
         });
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "1";
-                expressionText += "1";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "1";
+                    expressionText += "1";
+                    numbersPostprocess();
+                }
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "2";
-                expressionText += "2";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "2";
+                    expressionText += "2";
+                    numbersPostprocess();
+                }
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "3";
-                expressionText += "3";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "3";
+                    expressionText += "3";
+                    numbersPostprocess();
+                }
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "4";
-                expressionText += "4";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "4";
+                    expressionText += "4";
+                    numbersPostprocess();
+                }
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "5";
-                expressionText += "5";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "5";
+                    expressionText += "5";
+                    numbersPostprocess();
+                }
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "6";
-                expressionText += "6";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "6";
+                    expressionText += "6";
+                    numbersPostprocess();
+                }
             }
         });
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "7";
-                expressionText += "7";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "7";
+                    expressionText += "7";
+                    numbersPostprocess();
+                }
             }
         });
         button8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "8";
-                expressionText += "8";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "8";
+                    expressionText += "8";
+                    numbersPostprocess();
+                }
             }
         });
         button9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numbersPreprocess();
-                tempExpressionText += "9";
-                expressionText += "9";
-                numbersPostprocess();
+                if (!isPercentExist) {
+                    numbersPreprocess();
+                    tempExpressionText += "9";
+                    expressionText += "9";
+                    numbersPostprocess();
+                }
             }
         });
         buttonPlus.setOnClickListener(new View.OnClickListener() {
@@ -328,11 +348,13 @@ public class Calculator extends AppCompatActivity {
         buttonPercent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tempExpressionText.contains("%")) {
+                if (isNumber & !isPercentExist) {
+                    isPercentExist = true;
                     numbersPreprocess();
-                    tempExpressionText += "*0.01";
+                    tempExpressionText += "%";
                     expressionText += "%";
                     numbersPostprocess();
+                    percentCalculate();
                 }
             }
         });
@@ -345,6 +367,7 @@ public class Calculator extends AppCompatActivity {
                 setOnAnswerView();
                 isNumber = false;
                 isOperator = false;
+                isPercentExist = false;
             }
         });
         buttonEquals.setOnClickListener(new View.OnClickListener() {
@@ -384,11 +407,39 @@ public class Calculator extends AppCompatActivity {
                 }else if (isNumber & isOperator){
                     answerReuse = -answerReuse;
                     expressionText = answerReuse.toString();
+                }else {
+                    if (tempExpressionText.contains("-")) {
+                        tempExpressionText = "";
+                        expressionText = "";
+                    }else{
+                        tempExpressionText = "-";
+                        expressionText = "-";
+                    }
                 }
                 setOnTextView();
 
             }
         });
+    }
+
+    private void percentCalculate() {
+        if (numbers.isEmpty()) { //前面沒有其他運算時
+            expressionText = expressionText.substring(0,expressionText.length()-tempExpressionText.length());
+            tempExpressionText = String.valueOf(Double.parseDouble(tempExpressionText.substring(0,tempExpressionText.length()-1))*0.01);
+            expressionText += tempExpressionText;
+            setOnTextView();
+        }else {
+            if (operators.get(operators.size() - 1).equals("+") || operators.get(operators.size() - 1).equals("-")) {
+                tempExpressionText = String.valueOf(numbers.get(numbers.size() - 1) *
+                          Double.parseDouble(tempExpressionText.substring(0,tempExpressionText.length()-1)) * 0.01);
+                setOnTextView();
+            }else {
+                expressionText = expressionText.substring(0,expressionText.length()-tempExpressionText.length());
+                tempExpressionText = String.valueOf(Double.parseDouble(tempExpressionText.substring(0,tempExpressionText.length()-1))*0.01);
+                expressionText += tempExpressionText;
+                setOnTextView();
+            }
+        }
     }
 
     public void clear() {
