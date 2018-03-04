@@ -69,7 +69,7 @@ public class Calculator extends AppCompatActivity {
             Log.d("OPAL",operators.get(i));
         }
         expressionTextView.setText(expressionText);
-        Log.e("-","-seperateline-------------------------");
+        Log.e("-","---------------seperateline---------------------");
 
 
     }
@@ -352,6 +352,29 @@ public class Calculator extends AppCompatActivity {
                 calculate(numbers,operators);
                 setOnAnswerView();
                 clear();
+
+            }
+        });
+        buttonChangeSign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNumber && !isOperator){
+                    if (tempExpressionText.contains("-")){
+                        tempExpressionText = tempExpressionText.substring(1);
+                        expressionText = expressionText.substring(
+                                  0,expressionText.length()-tempExpressionText.length()-1) +
+                                  tempExpressionText;
+                    }else{
+                        tempExpressionText = "-"+tempExpressionText;
+                        expressionText =
+                                  expressionText.substring(0,expressionText.length()-tempExpressionText.length()+1)
+                                  + tempExpressionText;
+
+                    }
+                }else if (!isNumber && isOperator){
+
+                }
+                setOnTextView();
 
             }
         });
