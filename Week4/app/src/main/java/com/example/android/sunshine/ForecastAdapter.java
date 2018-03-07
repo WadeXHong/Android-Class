@@ -15,10 +15,12 @@
  */
 package com.example.android.sunshine;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +30,18 @@ import android.widget.TextView;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
  * from a {@link android.database.Cursor} to a {@link android.support.v7.widget.RecyclerView}.
  */
-class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
+class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> implements ItemTouchHelperAdapter{
 
+
+    private List<Integer> positionList;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
 
@@ -47,6 +55,20 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * an item is clicked in the list.
      */
     final private ForecastAdapterOnClickHandler mClickHandler;
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(positionList,fromPosition,toPosition);
+        notifyItemMoved(positionList.get(fromPosition),positionList.get(toPosition));
+
+    }
+
+    @Override
+    public void onItemDel(int position) {
+        notifyItemRemoved(positionList.get(position));
+        positionList.remove(position);
+
+    }
 
     /**
      * The interface that receives onClick messages.
@@ -72,10 +94,13 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * @param clickHandler The on-click handler for this adapter. This single handler is called
      *                     when an item is clicked.
      */
-    public ForecastAdapter(@NonNull Context context, ForecastAdapterOnClickHandler clickHandler) {
+    public ForecastAdapter(@NonNull Context context, ForecastAdapterOnClickHandler clickHandler, RecyclerView mRecyclerView) {
         mContext = context;
         mClickHandler = clickHandler;
         mUseTodayLayout = mContext.getResources().getBoolean(R.bool.use_today_layout);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(this);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     /**
@@ -128,7 +153,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        mCursor.moveToPosition(position);
+        mCursor.moveToPosition(positionList.get(position));
 
         /****************
          * Weather Icon *
@@ -136,7 +161,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
         int weatherImageId;
 
-        int viewType = getItemViewType(position);
+        int viewType = getItemViewType(positionList.get(position));
 
         switch (viewType) {
 
@@ -255,7 +280,11 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      */
     void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
+        positionList = new ArrayList<>();
         notifyDataSetChanged();
+        for (int i = 0 ; i < mCursor.getCount(); i++){
+            positionList.add(i,i);
+        }
     }
 
     /**
@@ -297,5 +326,38 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
             long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             mClickHandler.onClick(dateInMillis);
         }
+    }
+    public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback{
+
+        private ItemTouchHelperAdapter mAdapter;
+
+        public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter){
+            mAdapter = adapter;
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlags = ItemTouchHelper.LEFT |ItemTouchHelper.RIGHT;
+            return makeMovementFlags(dragFlags,swipeFlags);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            mAdapter.onItemMove(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+            return true;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            mAdapter.onItemDel(viewHolder.getAdapterPosition());
+
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled(){
+            return true;
+        }
+
     }
 }
