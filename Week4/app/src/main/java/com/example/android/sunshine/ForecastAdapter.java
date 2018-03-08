@@ -58,8 +58,11 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
+        //這行很重,配合下方mCursor.moveToPosition(positionList.get(position))整個將Cursor找到的位置兌換,不然滑下去再滑上來他會Reset
         Collections.swap(positionList,fromPosition,toPosition);
-        notifyItemMoved(positionList.get(fromPosition),positionList.get(toPosition));
+        //notifyItemMove吃的position是指Adapter的位置，所以Adpter換位置positionList內的值也要跟著換
+        notifyItemMoved(fromPosition,toPosition);
+
 
     }
 
@@ -282,8 +285,10 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         mCursor = newCursor;
         positionList = new ArrayList<>();
         notifyDataSetChanged();
-        for (int i = 0 ; i < mCursor.getCount(); i++){
-            positionList.add(i,i);
+        if (mCursor != null) { //沒加這行退出時會 Destroy 因為onLoaderReset會把null帶入此方法
+            for (int i = 0; i < mCursor.getCount(); i++) {
+                positionList.add(i, i);
+            }
         }
     }
 
@@ -313,7 +318,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         }
 
         /**
-         * This gets called by the child views during a click. We fetch the date that has been
+         * This gets called by the child views during a click. We fetch the date that has been   ← 找了兩天....
          * selected, and then call the onClick handler registered with this adapter, passing that
          * date.
          *
@@ -322,7 +327,8 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            mCursor.moveToPosition(adapterPosition);
+            //Cursor指標的位置都要跟著positionList換位置
+            mCursor.moveToPosition(positionList.get(adapterPosition));
             long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             mClickHandler.onClick(dateInMillis);
         }
