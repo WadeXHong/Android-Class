@@ -18,6 +18,7 @@ package com.example.android.sunshine;
 import android.content.ClipData;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -68,7 +69,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
 
     @Override
     public void onItemDel(int position) {
-        notifyItemRemoved(positionList.get(position));
+        notifyItemRemoved(position);
         positionList.remove(position);
 
     }
@@ -156,6 +157,8 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
+        List L = new ArrayList();
+        L = positionList;
         mCursor.moveToPosition(positionList.get(position));
 
         /****************
@@ -251,7 +254,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
     @Override
     public int getItemCount() {
         if (null == mCursor) return 0;
-        return mCursor.getCount();
+        return positionList.size();  //這是造成Swipe後滑到底會crash的原因 因為這邊告訴了Adapter總共有多少資料
     }
 
     /**
@@ -291,6 +294,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
             }
         }
     }
+
 
     /**
      * A ViewHolder is a required part of the pattern for RecyclerViews. It mostly behaves as
@@ -357,7 +361,6 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             mAdapter.onItemDel(viewHolder.getAdapterPosition());
-
         }
 
         @Override
