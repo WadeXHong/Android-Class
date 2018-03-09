@@ -15,10 +15,9 @@
  */
 package com.example.android.sunshine;
 
-import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -33,7 +32,6 @@ import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
@@ -42,7 +40,8 @@ import java.util.List;
 class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> implements ItemTouchHelperAdapter{
 
 
-    private List<Integer> positionList;
+
+    private ArrayList<Integer> mPositionList;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
 
@@ -57,10 +56,18 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      */
     final private ForecastAdapterOnClickHandler mClickHandler;
 
+    public ArrayList<Integer> getmPositionList() {
+        return mPositionList;
+    }
+
+    public void setmPositionList(ArrayList<Integer> mPositionList) {
+        this.mPositionList = mPositionList;
+    }
+
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
-        //這行很重,配合下方mCursor.moveToPosition(positionList.get(position))整個將Cursor找到的位置兌換,不然滑下去再滑上來他會Reset
-        Collections.swap(positionList,fromPosition,toPosition);
+        //這行很重,配合下方mCursor.moveToPosition(mPositionList.get(position))整個將Cursor找到的位置兌換,不然滑下去再滑上來他會Reset
+        Collections.swap(mPositionList,fromPosition,toPosition);
         //notifyItemMove吃的position是指Adapter的位置，所以Adpter換位置positionList內的值也要跟著換
         notifyItemMoved(fromPosition,toPosition);
 
@@ -70,7 +77,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
     @Override
     public void onItemDel(int position) {
         notifyItemRemoved(position);
-        positionList.remove(position);
+        mPositionList.remove(position);
 
     }
 
@@ -157,9 +164,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      */
     @Override
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        List L = new ArrayList();
-        L = positionList;
-        mCursor.moveToPosition(positionList.get(position));
+        mCursor.moveToPosition(mPositionList.get(position));
 
         /****************
          * Weather Icon *
@@ -167,7 +172,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
         int weatherImageId;
 
-        int viewType = getItemViewType(positionList.get(position));
+        int viewType = getItemViewType(mPositionList.get(position));
 
         switch (viewType) {
 
@@ -254,7 +259,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
     @Override
     public int getItemCount() {
         if (null == mCursor) return 0;
-        return positionList.size();  //這是造成Swipe後滑到底會crash的原因 因為這邊告訴了Adapter總共有多少資料
+        return mPositionList.size();  //這是造成Swipe後滑到底會crash的原因 因為這邊告訴了Adapter總共有多少資料
     }
 
     /**
@@ -284,13 +289,16 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      *
      * @param newCursor the new cursor to use as ForecastAdapter's data source
      */
-    void swapCursor(Cursor newCursor) {
+    void swapCursor(Cursor newCursor,ArrayList<Integer> positionList) {
         mCursor = newCursor;
-        positionList = new ArrayList<>();
         notifyDataSetChanged();
-        if (mCursor != null) { //沒加這行退出時會 Destroy 因為onLoaderReset會把null帶入此方法
-            for (int i = 0; i < mCursor.getCount(); i++) {
-                positionList.add(i, i);
+        setmPositionList(positionList); //用setter and getter 讀MainActivity存的順序
+        if (mPositionList == null) {
+            if (mCursor != null) { //沒加這行退出時會 Destroy 因為onLoaderReset會把null帶入此方法
+                mPositionList = new ArrayList<>();
+                for (int i = 0; i < mCursor.getCount(); i++) {
+                    mPositionList.add(i, i);
+                }
             }
         }
     }
@@ -332,7 +340,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             //Cursor指標的位置都要跟著positionList換位置
-            mCursor.moveToPosition(positionList.get(adapterPosition));
+            mCursor.moveToPosition(mPositionList.get(adapterPosition));
             long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             mClickHandler.onClick(dateInMillis);
         }

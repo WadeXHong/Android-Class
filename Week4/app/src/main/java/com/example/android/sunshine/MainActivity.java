@@ -36,6 +36,8 @@ import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
 import com.example.android.sunshine.sync.SunshineSyncUtils;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ForecastAdapter.ForecastAdapterOnClickHandler {
@@ -79,12 +81,25 @@ public class MainActivity extends AppCompatActivity implements
 
     private ProgressBar mLoadingIndicator;
 
+    public ArrayList<Integer> getmPositionList() {
+        return mPositionList;
+    }
+
+    public void setmPositionList(ArrayList<Integer> mPositionList) {
+        this.mPositionList = mPositionList;
+    }
+
+    public ArrayList<Integer> mPositionList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
         getSupportActionBar().setElevation(0f);
+        if (savedInstanceState != null) {
+            mPositionList = savedInstanceState.getIntegerArrayList("mPositionList"); //喚醒暫存的列表順序
+        }
 
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -154,6 +169,12 @@ public class MainActivity extends AppCompatActivity implements
 
         SunshineSyncUtils.initialize(this);
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {  //暫存列表順序
+        savedInstanceState.putIntegerArrayList("mPositionList",mPositionList);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     /**
@@ -236,7 +257,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
 
-        mForecastAdapter.swapCursor(data);
+        mForecastAdapter.swapCursor(data,mPositionList);
+        if(mPositionList == null){
+            setmPositionList(mForecastAdapter.getmPositionList()); //將swapCursor中建立的列表順序存回MainActivity以便暫存
+        }
         if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
         mRecyclerView.smoothScrollToPosition(mPosition);
         if (data.getCount() != 0) showWeatherDataView();
@@ -254,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements
          * Since this Loader's data is now invalid, we need to clear the Adapter that is
          * displaying the data.
          */
-        mForecastAdapter.swapCursor(null);
+        mForecastAdapter.swapCursor(null,mPositionList);
     }
 
     /**
